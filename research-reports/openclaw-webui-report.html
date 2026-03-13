@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw Web UI 调研报告</title>
+    <style>
+        :root {
+            --primary: #ff6b35;
+            --secondary: #004e89;
+            --accent: #1a659e;
+            --bg: #f7f7f7;
+            --card-bg: #ffffff;
+            --text: #2d3436;
+            --text-light: #636e72;
+            --border: #dfe6e9;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 0;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            border-radius: 20px;
+            color: white;
+            box-shadow: 0 10px 40px rgba(0,78,137,0.3);
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 5px;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        
+        .project-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .project-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), #ff8c5a);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .project-title {
+            flex: 1;
+        }
+        
+        .project-title h2 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+        
+        .project-title .stars {
+            color: #f39c12;
+            font-weight: 600;
+        }
+        
+        .project-title .stars span {
+            color: var(--text-light);
+            font-weight: 400;
+            font-size: 0.9rem;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat {
+            background: #f8f9fa;
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+        
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .badge-ts { background: #3178c6; color: white; }
+        .badge-docker { background: #2496ed; color: white; }
+        .badge-react { background: #61dafb; color: #282c34; }
+        .badge-next { background: #000000; color: white; }
+        
+        .feature-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .feature-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-icon {
+            font-size: 1.2rem;
+            min-width: 30px;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #fff5f0 0%, #fff 100%);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 0 10px 10px 0;
+            margin: 20px 0;
+        }
+        
+        .highlight-box h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .pros, .cons {
+            padding: 20px;
+            border-radius: 12px;
+        }
+        
+        .pros {
+            background: #e8f5e9;
+        }
+        
+        .cons {
+            background: #ffebee;
+        }
+        
+        .pros h4 { color: #2e7d32; }
+        .cons h4 { color: #c62828; }
+        
+        .pros li { color: #2e7d32; }
+        .cons li { color: #c62828; }
+        
+        .install-code {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            margin: 15px 0;
+        }
+        
+        .install-code .comment { color: #6a9955; }
+        .install-code .cmd { color: #569cd6; }
+        
+        .screenshot {
+            width: 100%;
+            border-radius: 12px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .recommend-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ff6b35, #ff8c5a);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-light);
+        }
+        
+        .footer a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+        
+        @media (max-width: 768px) {
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .stats {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🦞 OpenClaw Web UI 调研报告</h1>
+            <p>2026年3月 | 精选3款开源第三方管理界面</p>
+            <div style="margin-top: 20px;">
+                <span class="tag">Web UI</span>
+                <span class="tag">开源</span>
+                <span class="tag">管理面板</span>
+                <span class="tag">中文友好</span>
+            </div>
+        </header>
+
+        <!-- Poco-Claw -->
+        <div class="card">
+            <div class="project-header">
+                <div class="project-icon" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">P</div>
+                <div class="project-title">
+                    <h2>poco-ai/poco-claw</h2>
+                    <div class="stars">⭐ 1,151 <span>stars</span> · 🍴 106 forks</div>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">TypeScript</div>
+                    <div class="stat-label">主语言</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">2026-01-08</div>
+                    <div class="stat-label">创建时间</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">MIT</div>
+                    <div class="stat-label">许可证</div>
+                </div>
+            </div>
+            
+            <div class="badge-container">
+                <span class="badge badge-ts">TypeScript</span>
+                <span class="badge badge-docker">Docker</span>
+                <span class="badge badge-next">Next.js 16</span>
+                <span class="badge" style="background:#10b981;color:white">Claude Code</span>
+                <span class="badge" style="background:#f59e0b;color:white">内置IM</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; margin: 20px 0; color: var(--text-light);">
+                更美、更安全、更易用的 OpenClaw 替代品。内置 IM 支持、隔离沙箱、完美 UI。
+            </p>
+            
+            <img src="https://raw.githubusercontent.com/poco-ai/poco-claw/main/assets/hero.png" alt="Poco UI" class="screenshot">
+            
+            <h3 style="margin: 25px 0 15px;">✨ 核心特性</h3>
+            <ul class="feature-list">
+                <li><span class="feature-icon">🛡️</span><strong>安全沙箱</strong> - 所有任务在隔离容器中运行，不影响主机环境</li>
+                <li><span class="feature-icon">🎨</span><strong>精美 UI</strong> - Artifacts 视图支持 HTML/PDF/Markdown/图片/视频/Xmind 预览</li>
+                <li><span class="feature-icon">🎬</span><strong>回放功能</strong> - 可回放命令 I/O、浏览器会话、工具调用</li>
+                <li><span class="feature-icon">📱</span><strong>移动端支持</strong> - 随时随地控制你的 AI 助手</li>
+                <li><span class="feature-icon">💬</span><strong>IM 集成</strong> - 支持钉钉、Telegram，推送通知和事件订阅</li>
+                <li><span class="feature-icon">🧠</span><strong>智能记忆</strong> - 基于 mem0，记住你的偏好和项目上下文</li>
+                <li><span class="feature-icon">🌐</span><strong>内置浏览器</strong> - 自主网页研究，GitHub 集成</li>
+            </ul>
+            
+            <div class="highlight-box">
+                <h4>🏆 为什么适合中国人？</h4>
+                <ul>
+                    <li>✅ 中文文档完善 (README_zh.md)</li>
+                    <li>✅ 支持钉钉集成</li>
+                    <li>✅ 一键 Docker 部署</li>
+                    <li>✅ 中文界面，国产化友好</li>
+                </ul>
+            </div>
+            
+            <div class="pros-cons">
+                <div class="pros">
+                    <h4>✅ 优点</h4>
+                    <ul>
+                        <li>Stars 最高，最受欢迎</li>
+                        <li>UI 最精美现代化</li>
+                        <li>沙箱安全隔离</li>
+                        <li>钉钉集成</li>
+                        <li>文档最完善</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4>⚠️ 注意事项</h4>
+                    <ul>
+                        <li>需要 Docker 环境</li>
+                        <li>配置相对复杂</li>
+                        <li>资源占用稍高</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3 style="margin: 25px 0 15px;">🚀 安装命令</h3>
+            <div class="install-code">
+<span class="comment"># 克隆项目</span>
+<span class="cmd">git</span> clone https://github.com/poco-ai/poco-claw.git
+<span class="cmd">cd</span> poco-claw
+
+<span class="comment"># 一键启动</span>
+./scripts/quickstart.sh
+
+<span class="comment"># 访问</span>
+<span class="cmd">http</span>://localhost:3000
+            </div>
+            
+            <div class="recommend-badge">
+                ⭐ 推荐指数: 5/5
+            </div>
+        </div>
+
+        <!-- Mission Control -->
+        <div class="card">
+            <div class="project-header">
+                <div class="project-icon" style="background: linear-gradient(135deg, #00b894, #00cec9);">M</div>
+                <div class="project-title">
+                    <h2>manish-raana/openclaw-mission-control</h2>
+                    <div class="stars">⭐ 243 <span>stars</span> · 🍴 53 forks</div>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">TypeScript</div>
+                    <div class="stat-label">主语言</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">2026-02-01</div>
+                    <div class="stat-label">创建时间</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">Apache 2.0</div>
+                    <div class="stat-label">许可证</div>
+                </div>
+            </div>
+            
+            <div class="badge-container">
+                <span class="badge badge-ts">TypeScript</span>
+                <span class="badge" style="background:#61dafb;color:#282c34">React</span>
+                <span class="badge" style="background:#00b894;color:white">Real-time</span>
+                <span class="badge" style="background:#a29bfe;color:white">Convex</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; margin: 20px 0; color: var(--text-light);">
+                实时任务监控面板，Kanban 风格的任务队列，监控 agent 活动和任务状态。
+            </p>
+            
+            <h3 style="margin: 25px 0 15px;">✨ 核心特性</h3>
+            <ul class="feature-list">
+                <li><span class="feature-icon">🚀</span><strong>实时同步</strong> - 基于 Convex，所有变更即时推送到所有客户端</li>
+                <li><span class="feature-icon">🤖</span><strong>Agent 监控</strong> - 实时查看 agent 状态和活动</li>
+                <li><span class="feature-icon">📦</span><strong>任务队列</strong> - Kanban 视图：收件箱、已分配、进行中、待审核、已完成</li>
+                <li><span class="feature-icon">🧾</span><strong>资源管理</strong> - 任务关联文档显示为结构化资源</li>
+                <li><span class="feature-icon">💬</span><strong>评论追踪</strong> - 实时活动馈送，支持过滤</li>
+                <li><span class="feature-icon">🔐</span><strong>安全访问</strong> - Convex Auth 集成</li>
+            </ul>
+            
+            <div class="highlight-box">
+                <h4>🎯 适用场景</h4>
+                <p>适合需要任务追踪和团队协作的用户，特别是同时运行多个 OpenClaw agent 的场景。</p>
+            </div>
+            
+            <div class="pros-cons">
+                <div class="pros">
+                    <h4>✅ 优点</h4>
+                    <ul>
+                        <li>实时同步速度快</li>
+                        <li>Kanban 任务管理直观</li>
+                        <li>与 OpenClaw 深度集成</li>
+                        <li>开源许可证宽松</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4>⚠️ 注意事项</h4>
+                    <ul>
+                        <li>需要 Convex 账户</li>
+                        <li>主要面向任务管理</li>
+                        <li>中文支持一般</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3 style="margin: 25px 0 15px;">🚀 安装命令</h3>
+            <div class="install-code">
+<span class="comment"># 安装依赖</span>
+<span class="cmd">bun</span> install
+
+<span class="comment"># 启动开发</span>
+<span class="cmd">bun</span> dev
+
+<span class="comment"># 初始化数据</span>
+<span class="cmd">npx</span> convex run seed:run
+            </div>
+        </div>
+
+        <!-- Serverless OpenClaw -->
+        <div class="card">
+            <div class="project-header">
+                <div class="project-icon" style="background: linear-gradient(135deg, #ff9a56, #ff6a88);">S</div>
+                <div class="project-title">
+                    <h2>serithemage/serverless-openclaw</h2>
+                    <div class="stars">⭐ 141 <span>stars</span> · 🍴 21 forks</div>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">TypeScript</div>
+                    <div class="stat-label">主语言</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">2026-02-08</div>
+                    <div class="stat-label">创建时间</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">MIT</div>
+                    <div class="stat-label">许可证</div>
+                </div>
+            </div>
+            
+            <div class="badge-container">
+                <span class="badge badge-ts">TypeScript</span>
+                <span class="badge badge-docker">AWS CDK</span>
+                <span class="badge" style="background:#ff9900;color:white">AWS</span>
+                <span class="badge" style="background:#e17055;color:white">Serverless</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; margin: 20px 0; color: var(--text-light);">
+                在 AWS serverless 基础设施上运行 OpenClaw，月成本约 $1，Web UI + Telegram 接口。
+            </p>
+            
+            <h3 style="margin: 25px 0 15px;">✨ 核心特性</h3>
+            <ul class="feature-list">
+                <li><span class="feature-icon">💰</span><strong>超低成本</strong> - 按需运行容器，月费用约 $1（Free Tier 内仅 $0.23）</li>
+                <li><span class="feature-icon">⚡</span><strong>预热机制</strong> - EventBridge 定时预热容器，零冷启动</li>
+                <li><span class="feature-icon">🌐</span><strong>Web 聊天 UI</strong> - React SPA 实时聊天界面</li>
+                <li><span class="feature-icon">💬</span><strong>Telegram 机器人</strong> - 通过 Telegram 与 AI 助手对话</li>
+                <li><span class="feature-icon">🤖</span><strong>多 LLM 支持</strong> - Claude、GPT、DeepSeek 等</li>
+                <li><span class="feature-icon">🔒</span><strong>安全认证</strong> - AWS Cognito JWT 认证</li>
+                <li><span class="feature-icon">📦</span><strong>一键部署</strong> - 单个 cdk deploy 命令完成</li>
+            </ul>
+            
+            <div class="highlight-box">
+                <h4>🏗️ 架构概览</h4>
+                <p>前端 S3+CloudFront → API Gateway → Lambda → ECS Fargate → OpenClaw 容器</p>
+            </div>
+            
+            <div class="pros-cons">
+                <div class="pros">
+                    <h4>✅ 优点</h4>
+                    <ul>
+                        <li>成本极低</li>
+                        <li>无需管理服务器</li>
+                        <li>Web UI + Telegram 双接口</li>
+                        <li>自动扩缩容</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4>⚠️ 注意事项</h4>
+                    <ul>
+                        <li>需要 AWS 账户</li>
+                        <li>配置复杂，需要懂 AWS</li>
+                        <li>Alpha 阶段</li>
+                        <li>国内访问可能慢</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3 style="margin: 25px 0 15px;">🚀 安装命令</h3>
+            <div class="install-code">
+<span class="comment"># 前置要求</span>
+<span class="cmd">Node.js</span> 22.x, AWS CDK, Docker
+
+<span class="comment"># 部署</span>
+<span class="cmd">cdk</span> deploy
+
+<span class="comment"># 访问</span>
+<span class="cmd">CloudFront</span> 分配 URL
+            </div>
+        </div>
+
+        <!-- 总结 -->
+        <div class="card" style="background: linear-gradient(135deg, #004e89 0%, #1a659e 100%); color: white;">
+            <h2 style="margin-bottom: 25px; text-align: center;">📊 综合对比</h2>
+            
+            <table style="width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
+                <thead>
+                    <tr style="background: rgba(0,0,0,0.2);">
+                        <th style="padding: 15px; text-align: left;">项目</th>
+                        <th style="padding: 15px; text-align: center;">Stars</th>
+                        <th style="padding: 15px; text-align: center;">中文友好</th>
+                        <th style="padding: 15px; text-align: center;">部署难度</th>
+                        <th style="padding: 15px; text-align: center;">推荐度</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 15px;">poco-claw</td>
+                        <td style="padding: 15px; text-align: center;">⭐ 1,151</td>
+                        <td style="padding: 15px; text-align: center;">✅ 优秀</td>
+                        <td style="padding: 15px; text-align: center;">⭐⭐⭐</td>
+                        <td style="padding: 15px; text-align: center;">🏆🏆🏆🏆🏆</td>
+                    </tr>
+                    <tr style="background: rgba(255,255,255,0.05);">
+                        <td style="padding: 15px;">mission-control</td>
+                        <td style="padding: 15px; text-align: center;">⭐ 243</td>
+                        <td style="padding: 15px; text-align: center;">⭐⭐</td>
+                        <td style="padding: 15px; text-align: center;">⭐⭐⭐⭐</td>
+                        <td style="padding: 15px; text-align: center;">🏆🏆🏆</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 15px;">serverless-openclaw</td>
+                        <td style="padding: 15px; text-align: center;">⭐ 141</td>
+                        <td style="padding: 15px; text-align: center;">⭐⭐</td>
+                        <td style="padding: 15px; text-align: center;">⭐⭐⭐⭐⭐</td>
+                        <td style="padding: 15px; text-align: center;">🏆🏆🏆</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 30px; padding: 25px; background: rgba(255,255,255,0.15); border-radius: 12px;">
+                <h3 style="margin-bottom: 15px;">💡 最终推荐</h3>
+                <p><strong>🇨🇳 国内用户首选：poco-ai/poco-claw</strong></p>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li>Stars 最高，社区最活跃</li>
+                    <li>中文文档完善，有中文 README</li>
+                    <li>支持钉钉集成</li>
+                    <li>UI 最精美</li>
+                    <li>Docker 一键部署</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📅 调研时间: 2026年3月13日</p>
+            <p>🤖 由 OpenClaw AI 助手生成</p>
+            <p><a href="https://github.com/poco-ai/poco-claw">GitHub 源码</a></p>
+        </div>
+    </div>
+</body>
+</html>
