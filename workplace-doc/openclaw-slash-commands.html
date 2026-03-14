@@ -3,344 +3,557 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenClaw 对话框命令指南</title>
+    <title>OpenClaw 命令大全</title>
     <style>
         :root {
-            --primary: #ff6b35;
-            --secondary: #004e89;
-            --accent: #1a936f;
-            --bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --text: #2d3436;
-            --text-light: #636e72;
-            --code-bg: #1e1e1e;
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --code-bg: #0d1117;
+            --border: #334155;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: var(--bg);
             color: var(--text);
-            line-height: 1.5;
+            line-height: 1.6;
             padding: 15px;
+            background-image: 
+                radial-gradient(ellipse at top, #1e3a5f 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, #2d1b4e 0%, transparent 50%);
+            min-height: 100vh;
         }
         
-        .container { max-width: 1000px; margin: 0 auto; }
+        .container { max-width: 900px; margin: 0 auto; }
         
         header {
-            background: linear-gradient(135deg, var(--secondary), var(--accent));
-            color: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 20px;
             text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
         }
         
-        header h1 { font-size: 1.8em; margin-bottom: 8px; }
-        header .version { background: var(--primary); padding: 4px 14px; border-radius: 15px; font-size: 0.85em; }
-        header .date { margin-top: 10px; opacity: 0.85; font-size: 0.9em; }
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        header .subtitle { color: var(--text-muted); margin-bottom: 15px; }
+        header .version { 
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
         
         .search-box {
             width: 100%;
-            padding: 12px 18px;
+            padding: 14px 20px;
             font-size: 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            transition: border-color 0.2s;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 25px;
+            color: var(--text);
+            transition: all 0.2s;
         }
         
-        .search-box:focus { outline: none; border-color: var(--secondary); }
+        .search-box:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+        .search-box::placeholder { color: var(--text-muted); }
         
         .category {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            transition: transform 0.2s;
         }
+        
+        .category:hover { transform: translateY(-2px); }
         
         .category h2 {
-            color: var(--secondary);
-            font-size: 1.2em;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #eee;
+            font-size: 1.15em;
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-        
-        .cmd-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 10px;
         }
+        
+        .category h2 .icon { font-size: 1.3em; }
+        
+        .category.frequent { border-left: 4px solid var(--primary); }
+        .category.advanced { border-left: 4px solid var(--accent); }
         
         .cmd-item {
             display: flex;
             align-items: flex-start;
-            gap: 10px;
-            padding: 10px;
-            background: #fafafa;
-            border-radius: 8px;
+            gap: 12px;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            margin-bottom: 8px;
             transition: background 0.2s;
         }
         
-        .cmd-item:hover { background: #f0f0f0; }
+        .cmd-item:hover { background: rgba(255,255,255,0.06); }
+        .cmd-item.frequent { border: 1px solid rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.1); }
         
         .cmd-item code {
             background: var(--code-bg);
-            color: #98c379;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-family: Monaco, monospace;
-            font-size: 0.85em;
+            color: #60a5fa;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.88em;
             white-space: nowrap;
+            min-width: 140px;
         }
         
-        .cmd-item .desc {
-            font-size: 0.85em;
-            color: var(--text-light);
-        }
+        .cmd-item .info { flex: 1; }
+        .cmd-item .desc { color: var(--text); font-size: 0.95em; }
+        .cmd-item .scenario { color: var(--text-muted); font-size: 0.82em; margin-top: 4px; }
         
-        .quick-ref {
+        .quick-freq {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 8px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            margin-bottom: 25px;
         }
         
-        .quick-ref a {
-            display: block;
-            background: var(--card-bg);
-            padding: 12px;
-            border-radius: 8px;
-            text-align: center;
+        .quick-freq a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            padding: 14px 18px;
+            border-radius: 12px;
             text-decoration: none;
-            color: var(--secondary);
+            color: var(--text);
             font-weight: 500;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            border: 1px solid rgba(59, 130, 246, 0.3);
             transition: all 0.2s;
         }
         
-        .quick-ref a:hover { background: var(--secondary); color: white; transform: translateY(-2px); }
+        .quick-freq a:hover { 
+            background: linear-gradient(135deg, var(--primary), var(--accent)); 
+            transform: translateY(-2px);
+        }
         
         .tip {
-            background: #fff3e0;
-            border-left: 4px solid var(--primary);
-            padding: 12px 15px;
-            border-radius: 0 8px 8px 0;
-            margin: 15px 0;
-            font-size: 0.9em;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 95, 70, 0.3));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 20px 0;
         }
         
-        .highlight {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
-            padding: 12px 15px;
-            border-radius: 0 8px 8px 0;
-            margin: 15px 0;
+        .tip strong { color: #34d399; }
+        
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: 600;
+            margin-left: 8px;
         }
+        
+        .badge.freq { background: var(--primary); color: white; }
+        .badge.adv { background: var(--accent); color: white; }
         
         footer {
             text-align: center;
-            padding: 25px;
-            color: var(--text-light);
+            padding: 30px;
+            color: var(--text-muted);
             font-size: 0.85em;
         }
         
-        footer a { color: var(--secondary); text-decoration: none; }
+        footer a { color: #60a5fa; text-decoration: none; }
         
-        .badge { background: var(--primary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7em; margin-left: 5px; }
-        .badge.new { background: #4caf50; }
+        @media (max-width: 600px) {
+            .cmd-item { flex-direction: column; gap: 8px; }
+            .cmd-item code { min-width: auto; }
+            header h1 { font-size: 1.6em; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>💬 OpenClaw 对话框命令</h1>
-            <span class="version">Slash Commands</span>
-            <div class="date">2026年3月更新</div>
+            <h1>⚡ OpenClaw 命令大全</h1>
+            <div class="subtitle">从入门到进阶 · 对话框常用命令</div>
+            <span class="version">2026年3月更新</span>
         </header>
         
         <input type="text" class="search-box" placeholder="🔍 搜索命令..." id="searchInput">
         
-        <div class="quick-ref">
-            <a href="#core">核心</a>
-            <a href="#session">会话</a>
-            <a href="#agent">Agent</a>
-            <a href="#model">模型</a>
-            <a href="#output">输出</a>
-            <a href="#channel">通道</a>
-            <a href="#config">配置</a>
+        <div class="tip">
+            <strong>💡 快速上手：</strong> 
+            复制下面的命令直接发送到对话框即可使用。大部分命令需要<strong>单独发送</strong>（不与其他内容混在一起）。
         </div>
         
-        <div class="tip">💡 提示：命令需要作为**独立消息**发送（以 <code>/</code> 开头），部分命令需要发送者被授权</div>
-        
-        <div class="highlight">
-            <strong>⭐ 常用命令：</strong>
-            <code>/new</code> 新会话 · 
-            <code>/compact</code> 压缩上下文 · 
-            <code>/status</code> 查看状态 · 
-            <code>/help</code> 帮助
+        <div class="quick-freq">
+            <a href="#new">🆕 /new 新会话</a>
+            <a href="#compact">📦 /compact 压缩</a>
+            <a href="#status">📊 /status 状态</a>
+            <a href="#think">🧠 /think 思考</a>
+            <a href="#model">🔄 /model 换模型</a>
+            <a href="#stop">⏹️ /stop 停止</a>
         </div>
         
-        <div class="category" id="core">
-            <h2>⭐ 核心命令</h2>
-            <div class="cmd-grid">
-                <div class="cmd-item"><code>/new [model]</code><span class="desc">新建会话，可选指定模型</span></div>
-                <div class="cmd-item"><code>/reset</code><span class="desc">重置会话（同 /new）</span></div>
-                <div class="cmd-item"><code>/compact [instructions]</code><span class="desc">压缩上下文，保留要点</span></div>
-                <div class="cmd-item"><code>/stop</code><span class="desc">停止当前运行</span></div>
-                <div class="cmd-item"><code>/restart</code><span class="desc">重启 Gateway</span></div>
-                <div class="cmd-item"><code>/help</code><span class="desc">显示帮助信息</span></div>
-                <div class="cmd-item"><code>/commands</code><span class="desc">列出所有命令</span></div>
-                <div class="cmd-item"><code>/status</code><span class="desc">查看当前状态</span></div>
-                <div class="cmd-item"><code>/whoami</code><span class="desc">查看自己的 ID</span></div>
-                <div class="cmd-item"><code>/id</code><span class="desc">/whoami 的别名</span></div>
+        <div class="category frequent" id="new">
+            <h2><span class="icon">🆕</span> 新会话 & 重置 <span class="badge freq">最常用</span></h2>
+            
+            <div class="cmd-item frequent">
+                <code>/new</code>
+                <div class="info">
+                    <div class="desc">开启一个全新会话</div>
+                    <div class="scenario">📌 场景：对话混乱了，想重新开始</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item frequent">
+                <code>/new minimax-m2.5</code>
+                <div class="info">
+                    <div class="desc">新建会话并指定模型</div>
+                    <div class="scenario">📌 场景：想用特定模型开始新对话</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/reset</code>
+                <div class="info">
+                    <div class="desc">重置当前会话（同 /new）</div>
+                    <div class="scenario">📌 场景：功能同 /new，看你习惯</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item frequent">
+                <code>/compact</code>
+                <div class="info">
+                    <div class="desc">压缩上下文，保留关键信息</div>
+                    <div class="scenario">📌 场景：对话太长了，想让它更精简</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/compact 保留xxx</code>
+                <div class="info">
+                    <div class="desc">压缩时指定保留的内容</div>
+                    <div class="scenario">📌 场景：想保留某个重要的上下文</div>
+                </div>
             </div>
         </div>
         
-        <div class="category" id="session">
-            <h2>🔄 会话控制</h2>
-            <div class="cmd-grid">
-                <div class="cmd-item"><code>/think &lt;level&gt;</code><span class="desc">思考深度：off/minimal/low/medium/high/xhigh</span></div>
-                <div class="cmd-item"><code>/thinking</code><span class="desc">/think 的别名</span></div>
-                <div class="cmd-item"><code>/t</code><span class="desc">/think 的短别名</span></div>
-                <div class="cmd-item"><code>/verbose &lt;mode&gt;</code><span class="desc">详细输出：on/full/off</span></div>
-                <div class="cmd-item"><code>/v</code><span class="desc">/verbose 的别名</span></div>
-                <div class="cmd-item"><code>/reasoning &lt;mode&gt;</code><span class="desc">推理显示：on/off/stream</span></div>
-                <div class="cmd-item"><code>/reason</code><span class="desc">/reasoning 的别名</span></div>
-                <div class="cmd-item"><code>/elevated &lt;mode&gt;</code><span class="desc">提权模式：on/off/ask/full</span></div>
-                <div class="cmd-item"><code>/elev</code><span class="desc">/elevated 的别名</span></div>
-                <div class="cmd-item"><code>/usage &lt;mode&gt;</code><span class="desc">用量显示：off/tokens/full/cost</span></div>
-                <div class="cmd-item"><code>/queue &lt;mode&gt;</code><span name="desc">队列模式控制</span></div>
-                <div class="cmd-item"><code>/session idle &lt;duration&gt;</code><span class="desc">设置空闲超时</span></div>
-                <div class="cmd-item"><code>/session max-age &lt;duration&gt;</code><span class="desc">设置最大会话时长</span></div>
-                <div class="cmd-item"><code>/send on|off|inherit</code><span class="desc">控制消息发送</span></div>
-                <div class="cmd-item"><code>/activation mention|always</span><span class="desc">群聊激活模式</span></div>
+        <div class="category frequent" id="status">
+            <h2><span class="icon">📊</span> 查看状态</h2>
+            
+            <div class="cmd-item frequent">
+                <code>/status</code>
+                <div class="info">
+                    <div class="desc">查看当前状态、用量、模型</div>
+                    <div class="scenario">📌 场景：想知道当前用的什么模型、还剩多少额度</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/whoami</code>
+                <div class="info">
+                    <div class="desc">查看自己的用户 ID</div>
+                    <div class="scenario">📌 场景：添加白名单或调试时需要</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/help</code>
+                <div class="info">
+                    <div class="desc">显示帮助信息</div>
+                    <div class="scenario">📌 场景：忘记命令了，看看快速参考</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/commands</code>
+                <div class="info">
+                    <div class="desc">列出所有可用命令</div>
+                    <div class="scenario">📌 场景：想看看有哪些命令可以用</div>
+                </div>
             </div>
         </div>
         
-        <div class="category" id="agent">
-            <h2>🤖 Agent 控制</h2>
-            <div class="cmd-grid">
-                <div class="cmd-item"><code>/acp spawn</code><span class="desc">启动 ACP 会话</span></div>
-                <div class="cmd-item"><code>/acp cancel</code><span class="desc">取消 ACP 运行</span></div>
-                <div class="cmd-item"><code>/acp steer</code><span class="desc">引导 ACP 方向</span></div>
-                <div class="cmd-item"><code>/acp close</code><span class="desc">关闭 ACP 会话</span></div>
-                <div class="cmd-item"><code>/acp status</code><span class="desc">查看 ACP 状态</span></div>
-                <div class="cmd-item"><code>/acp sessions</code><span class="desc">列出 ACP 会话</span></div>
-                <div class="cmd-item"><code>/acp set-mode</code><span class="desc">设置模式：persistent/oneshot</span></div>
-                <div class="cmd-item"><code>/subagents list</code><span class="desc">列出子 Agent</span></div>
-                <div class="cmd-item"><code>/subagents kill</code><span class="desc">终止子 Agent</span></div>
-                <div class="cmd-item"><code>/subagents log</code><span class="desc">查看子 Agent 日志</span></div>
-                <div class="cmd-item"><code>/subagents info</code><span class="desc">子 Agent 详情</span></div>
-                <div class="cmd-item"><code>/subagents send</code><span class="desc">发送消息给子 Agent</span></div>
-                <div class="cmd-item"><code>/subagents steer</code><span class="desc">引导子 Agent</span></div>
-                <div class="cmd-item"><code>/subagents spawn</code><span class="desc">创建子 Agent</span></div>
-                <div class="cmd-item"><code>/agents</code><span class="desc">列出线程绑定的 Agent</span></div>
-                <div class="cmd-item"><code>/kill &lt;id|#|all&gt;</code><span class="desc">立即终止 Agent</span></div>
-                <div class="cmd-item"><code>/steer &lt;id&gt; &lt;msg&gt;</span><span class="desc">引导运行中的 Agent</span></div>
-                <div class="cmd-item"><code>/tell</code><span class="desc">/steer 的别名</span></div>
-                <div class="cmd-item"><code>/focus &lt;target&gt;</code><span class="desc">绑定线程到 Agent</span></div>
-                <div class="cmd-item"><code>/unfocus</code><span class="desc">解除线程绑定</span></div>
+        <div class="category frequent" id="think">
+            <h2><span class="icon">🧠</span> 思考模式 <span class="badge freq">进阶必学</span></h2>
+            
+            <div class="cmd-item frequent">
+                <code>/think high</code>
+                <div class="info">
+                    <div class="desc">开启深度思考模式</div>
+                    <div class="scenario">📌 场景：复杂问题需要更详细的推理</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/think medium</code>
+                <div class="info">
+                    <div class="desc">中等思考深度（默认）</div>
+                    <div class="scenario">📌 场景：日常对话的标准模式</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/think low</code>
+                <div class="info">
+                    <div class="desc">快速回答，减少思考</div>
+                    <div class="scenario">📌 场景：简单问题想要快速度回答</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/think off</code>
+                <div class="info">
+                    <div class="desc">关闭思考模式</div>
+                    <div class="scenario">📌 场景：不需要思考，直接回答</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/reasoning on</code>
+                <div class="info">
+                    <div class="desc">显示推理过程</div>
+                    <div class="scenario">📌 场景：想看 AI 是怎么思考的</div>
+                </div>
             </div>
         </div>
         
-        <div class="category" id="model">
-            <h2>🧠 模型选择</h2>
-            <div class="cmd-grid">
-                <div class="cmd-item"><code>/model</code><span class="desc">显示当前模型</span></div>
-                <div class="cmd-item"><code>/model list</code><span class="desc">列出可用模型</span></div>
-                <div class="cmd-item"><code>/model &lt;name&gt;</code><span class="desc">切换到指定模型</span></div>
-                <div class="cmd-item"><code>/models</code><span class="desc">/model 的别名</span></div>
-                <div class="cmd-item"><code>/&lt;alias&gt;</code><span class="desc">使用模型别名快速切换</span></div>
+        <div class="category frequent" id="model">
+            <h2><span class="icon">🔄</span> 切换模型</h2>
+            
+            <div class="cmd-item frequent">
+                <code>/model</code>
+                <div class="info">
+                    <div class="desc">查看当前使用的模型</div>
+                    <div class="scenario">📌 场景：不确定现在用的什么模型</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item frequent">
+                <code>/model list</code>
+                <div class="info">
+                    <div class="desc">列出所有可用模型</div>
+                    <div class="scenario">📌 场景：看看有哪些模型可以切换</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item frequent">
+                <code>/model minimax-m2.5</code>
+                <div class="info">
+                    <div class="desc">切换到指定模型</div>
+                    <div class="scenario">📌 场景：想用国产模型试试</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/models</code>
+                <div class="info">
+                    <div class="desc">/model 的简写</div>
+                    <div class="scenario">📌 场景：和 /model 一样的作用</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="category frequent" id="stop">
+            <h2><span class="icon">⏹️</span> 停止控制</h2>
+            
+            <div class="cmd-item frequent">
+                <code>/stop</code>
+                <div class="info">
+                    <div class="desc">停止当前正在生成的回复</div>
+                    <div class="scenario">📌 场景：AI 开始跑偏了，想让它停下</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/restart</code>
+                <div class="info">
+                    <div class="desc">重启 Gateway 服务</div>
+                    <div class="scenario">📌 场景：遇到异常，重启服务试试</div>
+                </div>
             </div>
         </div>
         
         <div class="category" id="output">
-            <h2>🔊 输出控制</h2>
-            <div class="cmd-grid">
-                <div class="cmd-item"><code>/tts off</code><span class="desc">关闭语音</span></div>
-                <div class="cmd-item"><code>/tts always</code><span class="desc">始终语音播报</span></div>
-                <div class="cmd-item"><code>/tts inbound</code><span class="desc">仅播报输入</span></div>
-                <div class="cmd-item"><code>/tts tagged</code><span class="desc">仅播报标记消息</span></div>
-                <div class="cmd-item"><code>/tts status</code><span class="desc">查看 TTS 状态</span></div>
-                <div class="cmd-item"><code>/tts provider</code><span class="desc">查看 TTS 提供商</span></div>
-                <div class="cmd-item"><code>/tts limit</code><span class="desc">设置播报限制</span></div>
-                <div class="cmd-item"><code>/voice</code><span class="desc">Discord 语音控制</span></div>
+            <h2><span class="icon">🔊</span> 输出设置</h2>
+            
+            <div class="cmd-item">
+                <code>/verbose on</code>
+                <div class="info">
+                    <div class="desc">开启详细输出（显示工具日志）</div>
+                    <div class="scenario">📌 场景：调试或想看 AI 做了什么</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/verbose off</code>
+                <div class="info">
+                    <div class="desc">关闭详细输出（默认）</div>
+                    <div class="scenario">📌 场景：恢复正常简洁输出</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/usage cost</code>
+                <div class="info">
+                    <div class="desc">显示本次对话花费</div>
+                    <div class="scenario">📌 场景：想看看花了多少钱</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="category" id="agent">
+            <h2><span class="icon">🤖</span> Agent 控制 <span class="badge adv">进阶</span></h2>
+            
+            <div class="cmd-item">
+                <code>/focus @agent</code>
+                <div class="info">
+                    <div class="desc">绑定当前对话到指定 Agent</div>
+                    <div class="scenario">📌 场景：在群聊中指定某个 Agent 响应</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/unfocus</code>
+                <div class="info">
+                    <div class="desc">解除 Agent 绑定</div>
+                    <div class="scenario">📌 场景：不再需要指定 Agent 响应</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/agents</code>
+                <div class="info">
+                    <div class="desc">查看有哪些可用 Agent</div>
+                    <div class="scenario">📌 场景：想知道能切换到哪些 Agent</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/subagents list</code>
+                <div class="info">
+                    <div class="desc">查看当前子 Agent 状态</div>
+                    <div class="scenario">📌 场景：后台有任务在跑，看看进度</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/kill all</code>
+                <div class="info">
+                    <div class="desc">终止所有子 Agent</div>
+                    <div class="scenario">📌 场景：想取消所有后台任务</div>
+                </div>
             </div>
         </div>
         
         <div class="category" id="channel">
-            <h2>💬 通道切换</h2>
-            <div class="cmd-grid">
-                <div class="cmd-item"><code>/dock-telegram</code><span class="desc">切换到 Telegram 回复</span></div>
-                <div class="cmd-item"><code>/dock_discord</code><span class="desc">/dock-telegram 别名</span></div>
-                <div class="cmd-item"><code>/dock-discord</code><span class="desc">切换到 Discord 回复</span></div>
-                <div class="cmd-item"><code>/dock_discord</code><span class="desc">/dock-discord 别名</span></div>
-                <div class="cmd-item"><code>/dock-slack</code><span class="desc">切换到 Slack 回复</span></div>
-                <div class="cmd-item"><code>/dock_slack</code><span class="desc">/dock-slack 别名</span></div>
+            <h2><span class="icon">💬</span> 通道切换 <span class="badge adv">进阶</span></h2>
+            
+            <div class="cmd-item">
+                <code>/dock-telegram</code>
+                <div class="info">
+                    <div class="desc">切换回复到 Telegram</div>
+                    <div class="scenario">📌 场景：想从其他渠道切换到 Telegram 收消息</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/dock-discord</code>
+                <div class="info">
+                    <div class="desc">切换回复到 Discord</div>
+                    <div class="scenario">📌 场景：想从其他渠道切换到 Discord 收消息</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="category" id="elevated">
+            <h2><span class="icon">🔐</span> 权限控制 <span class="badge adv">进阶</span></h2>
+            
+            <div class="cmd-item">
+                <code>/elevated on</code>
+                <div class="info">
+                    <div class="desc">开启提权模式（跳过确认）</div>
+                    <div class="scenario">📌 场景：需要执行敏感操作，减少确认弹窗</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/elevated ask</code>
+                <div class="info">
+                    <div class="desc">询问模式（默认）</div>
+                    <div class="scenario">📌 场景：每次操作前确认</div>
+                </div>
+            </div>
+            
+            <div class="cmd-item">
+                <code>/elevated off</code>
+                <div class="info">
+                    <div class="desc">关闭提权</div>
+                    <div class="scenario">📌 场景：禁止执行危险操作</div>
+                </div>
             </div>
         </div>
         
         <div class="category" id="config">
-            <h2>⚙️ 配置管理</h2>
-            <div class="cmd-grid">
-                <div class="cmd-item"><code>/config show</code><span class="desc">显示配置</span></div>
-                <div class="cmd-item"><code>/config get</code><span class="desc">获取配置项</span></div>
-                <div class="cmd-item"><code>/config set</code><span class="desc">设置配置项</span></div>
-                <div class="cmd-item"><code>/config unset</code><span class="desc">删除配置项</span></div>
-                <div class="cmd-item"><code>/debug show</code><span class="desc">显示调试配置</span></div>
-                <div class="cmd-item"><code>/debug set</code><span class="desc">设置调试项</span></div>
-                <div class="cmd-item"><code>/debug unset</code><span class="desc">删除调试项</span></div>
-                <div class="cmd-item"><code>/debug reset</code><span class="desc">重置调试配置</span></div>
-                <div class="cmd-item"><code>/allowlist add</code><span class="desc">添加到白名单</span></div>
-                <div class="cmd-item"><code>/allowlist remove</code><span class="desc">从白名单移除</span></div>
-                <div class="cmd-item"><code>/allowlist list</code><span class="desc">列出白名单</span></div>
-                <div class="cmd-item"><code>/approve</code><span class="desc">处理执行审批</span></div>
-                <div class="cmd-item"><code>/context</code><span class="desc">查看上下文详情</span></div>
-                <div class="cmd-item"><code>/export-session</code><span class="desc">导出会话</span></div>
-                <div class="cmd-item"><code>/export</code><span class="desc">/export-session 别名</span></div>
+            <h2><span class="icon">⚙️</span> 配置管理 <span class="badge adv">高级</span></h2>
+            
+            <div class="cmd-item">
+                <code>/config show</code>
+                <div class="info">
+                    <div class="desc">显示当前配置</div>
+                    <div class="scenario">📌 场景：查看完整配置</div>
+                </div>
             </div>
-        </div>
-        
-        <div class="category" id="exec">
-            <h2>⚡ 执行命令</h2>
-            <div class="cmd-grid">
-                <div class="cmd-item"><code>/exec</code><span class="desc">查看当前执行设置</span></div>
-                <div class="cmd-item"><code>/exec host=&lt;mode&gt;</code><span class="desc">设置执行主机</span></div>
-                <div class="cmd-item"><code>/exec security=&lt;mode&gt;</code><span class="desc">设置安全模式</span></div>
-                <div class="cmd-item"><code>/exec ask=&lt;mode&gt;</code><span class="desc">设置询问模式</span></div>
-                <div class="cmd-item"><code>/bash &lt;command&gt;</code><span class="desc">执行 shell 命令</span></div>
-                <div class="cmd-item"><code>! &lt;command&gt;</code><span class="desc">/bash 的快捷方式</span></div>
-                <div class="cmd-item"><code>!poll</code><span class="desc">检查命令输出</span></div>
-                <div class="cmd-item"><code>!stop</code><span class="desc">停止运行中的命令</span></div>
+            
+            <div class="cmd-item">
+                <code>/config get xxx</code>
+                <div class="info">
+                    <div class="desc">查看指定配置项</div>
+                    <div class="scenario">📌 场景：查看某个具体配置</div>
+                </div>
             </div>
-        </div>
-        
-        <div class="category" id="skill">
-            <h2>🛠️ 技能命令</h2>
-            <div class="cmd-grid">
-                <div class="cmd-item"><code>/skill &lt;name&gt;</code><span class="desc">运行指定技能</span></div>
-                <div class="cmd-item"><code>/skill &lt;name&gt; &lt;input&gt;</code><span class="desc">带输入运行技能</span></div>
-                <div class="cmd-item"><code>/prose</code><span class="desc">OpenProse 写作助手</span></div>
+            
+            <div class="cmd-item">
+                <code>/allowlist add @xxx</code>
+                <div class="info">
+                    <div class="desc">添加到白名单</div>
+                    <div class="scenario">📌 场景：授权新用户使用命令</div>
+                </div>
             </div>
         </div>
         
         <div class="tip">
-            <strong>💡 使用技巧：</strong><br>
-            • 命令和参数之间可用 <code>:</code> 分隔，如 <code>/think: high</code><br>
-            • <code>/new</code> 后面可指定模型别名，如 <code>/new minimax-m2.5</code><br>
-            • 授权用户发送的纯命令消息会快速执行（跳过队列）
+            <strong>📌 常见问题：</strong><br>
+            • <strong>命令怎么用？</strong> 直接在对话框输入 <code>/命令</code> 然后发送<br>
+            • <strong>命令没反应？</strong> 确保单独发送，不要和其他文字混在一起<br>
+            • <strong>模型切换在哪？</strong> 用 <code>/model minimax-m2.5</code> 切换到 MiniMax
         </div>
         
         <footer>
-            <p>📖 文档：<a href="https://docs.openclaw.ai/tools/slash-commands" target="_blank">docs.openclaw.ai</a></p>
-            <p>🦞 OpenClaw v3.12 · 2026</p>
+            <p>📖 完整文档：<a href="https://docs.openclaw.ai/tools/slash-commands" target="_blank">docs.openclaw.ai</a></p>
+            <p>🦞 OpenClaw · 让 AI 成为你的第二大脑</p>
         </footer>
     </div>
     
@@ -349,6 +562,10 @@
             const q = e.target.value.toLowerCase();
             document.querySelectorAll('.cmd-item').forEach(item => {
                 item.style.display = item.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+            });
+            document.querySelectorAll('.category').forEach(cat => {
+                const visible = cat.querySelectorAll('.cmd-item[style="display: flex;"], .cmd-item:not([style])').length;
+                cat.style.display = visible > 0 ? 'block' : 'none';
             });
         });
     </script>
