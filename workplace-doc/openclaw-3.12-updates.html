@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw 3.12 更新 + 飞书插件调研报告</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .meta {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+        }
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.4rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h2 .badge {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .badge-new { background: #dbeafe; color: #1d4ed8; }
+        .badge-fix { background: #dcfce7; color: #166534; }
+        .badge-security { background: #fee2e2; color: #dc2626; }
+        .badge-breaking { background: #fef3c7; color: #d97706; }
+        h3 {
+            font-size: 1.1rem;
+            margin: 20px 0 12px;
+            color: var(--text);
+        }
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .version-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .version-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .version-card .ver {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0369a1;
+        }
+        .version-card .date {
+            font-size: 0.85rem;
+            color: #075985;
+        }
+        .highlight-box {
+            background: #f0fdf4;
+            border-left: 4px solid var(--success);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+        }
+        .warning-box {
+            background: #fffbeb;
+            border-left: 4px solid var(--warning);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+        }
+        code {
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #dc2626;
+        }
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+        }
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        .feature-item .icon {
+            font-size: 1.2rem;
+        }
+        .toc {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .toc h3 { margin-top: 0; }
+        .toc ul { margin: 0; }
+        .toc a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .toc a:hover { text-decoration: underline; }
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 OpenClaw 3.12 更新调研</h1>
+        <div class="meta">
+            📅 调研时间：2026年3月14日 | 🤖 版本：OpenClaw 2026.3.12 | 📦 飞书插件：2026.3.13
+        </div>
+
+        <div class="toc">
+            <h3>📑 目录</h3>
+            <ul>
+                <li><a href="#overview">一、更新概览</a></li>
+                <li><a href="#highlights">二、核心新功能</a></li>
+                <li><a href="#fixes">三、问题修复</a></li>
+                <li><a href="#security">四、安全更新</a></li>
+                <li><a href="#feishu">五、飞书插件更新</a></li>
+                <li><a href="#upgrade">六、升级建议</a></li>
+            </ul>
+        </div>
+
+        <div class="card" id="overview">
+            <h2>📊 更新概览 <span class="badge badge-new">2026.3.12</span></h2>
+            <div class="version-grid">
+                <div class="version-card">
+                    <div class="ver">2026.3.12</div>
+                    <div class="date">2026-03-14</div>
+                </div>
+                <div class="version-card">
+                    <div class="ver">2026.3.13</div>
+                    <div class="date">飞书插件</div>
+                </div>
+            </div>
+            <p>本次更新聚焦于<strong>移动端体验优化</strong>、<strong>浏览器集成增强</strong>和<strong>多项安全修复</strong>。</p>
+        </div>
+
+        <div class="card" id="highlights">
+            <h2>✨ 核心新功能</h2>
+            
+            <h3>📱 Android / iOS 移动端改进</h3>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span class="icon">🎨</span>
+                    <div><strong>Android 聊天设置重构</strong> - 重新设计聊天设置页面，分组显示设备和媒体设置</div>
+                </div>
+                <div class="feature-item">
+                    <span class="icon">📱</span>
+                    <div><strong>iOS 首次运行欢迎页</strong> - 新增首次运行欢迎页面，停止自动打开二维码扫描</div>
+                </div>
+                <div class="feature-item">
+                    <span class="icon">🔗</span>
+                    <div><strong>Chrome DevTools MCP</strong> - 新增官方 Chrome DevTools MCP 附加模式</div>
+                </div>
+                <div class="feature-item">
+                    <span class="icon">🌐</span>
+                    <div><strong>Docker 时区支持</strong> - 新增 OPENCLAW_TZ 环境变量支持</div>
+                </div>
+            </div>
+
+            <h3>🔧 浏览器自动化增强</h3>
+            <ul>
+                <li>新增 <code>profile="user"</code> 用于登录的主浏览器</li>
+                <li>新增 <code>profile="chrome-relay"</code> 用于扩展 relay</li>
+                <li>支持批量操作、选择器定位、延迟点击</li>
+                <li>Playwright 和 Chrome MCP 的 ARIA 角色集去重</li>
+            </ul>
+        </div>
+
+        <div class="card" id="fixes">
+            <h2>🐛 问题修复 <span class="badge badge-fix">30+ 项</span></h2>
+            
+            <h3>核心组件</h3>
+            <ul>
+                <li><strong>Dashboard 聊天 UI</strong> - 修复工具结果导致的 UI 冻结/重渲染问题</li>
+                <li><strong>Gateway RPC</strong> - 添加超时机制，防止挂起的请求泄漏</li>
+                <li><strong>Plugin SDK 打包</strong> - 修复内存膨胀问题</li>
+                <li><strong>Ollama 推理</strong> - 修复本地推理模型的思维泄露问题</li>
+            </ul>
+
+            <h3>平台特定修复</h3>
+            <ul>
+                <li><strong>Android</strong> - 二维码扫描切换到 Google Code Scanner</li>
+                <li><strong>macOS</strong> - 避免新安装的 launchd gateway 自我重启</li>
+                <li><strong>Windows</strong> - 修复网关安装卡住、停止失败等问题</li>
+                <li><strong>Discord</strong> - 修复启动时崩溃问题</li>
+                <li><strong>Slack</strong> - 修复 probe 认证问题</li>
+            </ul>
+
+            <h3>飞书相关</h3>
+            <ul>
+                <li><strong>分块流式传输</strong> - 现在需要配置 <code>blockStreaming: true</code> 启用</li>
+                <li><strong>流式输出</strong> - 支持交互式卡片流式输出</li>
+            </ul>
+        </div>
+
+        <div class="card" id="security">
+            <h2>🔒 安全更新 <span class="badge badge-security">重要</span></h2>
+            
+            <ul>
+                <li><strong>设备配对</strong> - 引导设置码改为一次性使用</li>
+                <li><strong>外部内容</strong> - 剥离零宽度字符和软连字符</li>
+                <li><strong>Exec 审批</strong> - 扩展 pnpm、Perl、PowerShell 审批流程</li>
+                <li><strong>Telegram Webhook</strong> - 在读取请求体前验证 Webhook 密钥</li>
+                <li><strong>iMessage</strong> - 拒绝不安全的远程附件路径</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>⚠️ 注意</strong>：本次更新包含多项安全修复，建议所有用户尽快升级。
+            </div>
+        </div>
+
+        <div class="card" id="feishu">
+            <h2>📱 飞书插件更新</h2>
+            <p><strong>当前版本：</strong> 2026.3.13</p>
+            
+            <h3>流式输出配置（重点！）</h3>
+            <div class="highlight-box">
+                <strong>✅ 已修复：</strong>飞书流式输出现在可以正常使用了！
+            </div>
+
+            <h4>配置方法：</h4>
+            <pre>{
+  "channels": {
+    "feishu": {
+      "streaming": true,
+      "blockStreaming": true
+    }
+  },
+  "agents": {
+    "defaults": {
+      "blockStreamingDefault": "on",
+      "blockStreamingBreak": "text_end"
+    }
+  }
+}</pre>
+
+            <h3>飞书插件核心功能</h3>
+            <ul>
+                <li>✅ 消息接收和发送</li>
+                <li>✅ 群聊和私聊支持</li>
+                <li>✅ WebSocket 长连接</li>
+                <li>✅ 流式卡片输出</li>
+                <li>✅ 文档操作 (feishu_doc)</li>
+                <li>✅ 云空间操作 (feishu_drive)</li>
+                <li>✅ Wiki 知识库 (feishu_wiki)</li>
+                <li>✅ 多维表格 (feishu_bitable)</li>
+            </ul>
+        </div>
+
+        <div class="card" id="upgrade">
+            <h2>🚀 升级建议</h2>
+            
+            <h3>立即升级</h3>
+            <ul>
+                <li>所有用户都应升级以获取安全修复</li>
+                <li>使用飞书的用户务必配置 <code>blockStreaming</code> 以启用流式输出</li>
+            </ul>
+
+            <h3>升级命令</h3>
+            <pre>openclaw update run
+openclaw gateway restart</pre>
+
+            <h3>配置飞书流式输出</h3>
+            <pre>openclaw config set channels.feishu.blockStreaming true
+openclaw config set agents.defaults.blockStreamingDefault on
+openclaw config set agents.defaults.blockStreamingBreak text_end
+openclaw gateway restart</pre>
+        </div>
+
+        <footer>
+            <p>📄 OpenClaw 3.12 调研报告 | 由 AI 助手生成</p>
+            <p>🔗 <a href="https://github.com/openclaw/openclaw/releases">查看官方更新日志</a></p>
+        </footer>
+    </div>
+</body>
+</html>
