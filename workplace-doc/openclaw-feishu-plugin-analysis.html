@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenClaw 飞书官方插件新功能分析报告</title>
+  <style>
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      max-width: 900px; 
+      margin: 0 auto; 
+      padding: 40px 20px;
+      line-height: 1.8;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 50px;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    h1 { 
+      color: #1a1a2e; 
+      border-bottom: 4px solid #e91e63; 
+      padding-bottom: 20px;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    h2 { 
+      color: #16213e; 
+      margin-top: 40px;
+      border-left: 5px solid #e91e63;
+      padding-left: 15px;
+      font-size: 22px;
+    }
+    h3 { color: #0f3460; margin-top: 25px; }
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin: 25px 0;
+      font-size: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td { 
+      border: none;
+      padding: 14px 16px; 
+      text-align: left;
+    }
+    th { 
+      background: linear-gradient(135deg, #e91e63 0%, #ff6b6b 100%); 
+      color: white;
+      font-weight: 600;
+    }
+    tr:nth-child(even) { background: #f8f9fa; }
+    tr:hover { background: #f0f0f0; }
+    code { 
+      background: linear-gradient(135deg, #2d2d2d 0%, #1a1a2e 100%); 
+      color: #f8f8f2; 
+      padding: 4px 10px; 
+      border-radius: 6px;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 13px;
+    }
+    pre { 
+      background: linear-gradient(135deg, #2d2d2d 0%, #1a1a2e 100%); 
+      color: #f8f8f2;
+      padding: 25px; 
+      border-radius: 12px;
+      overflow-x: auto;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+    }
+    pre code { 
+      background: none; 
+      padding: 0;
+    }
+    blockquote {
+      border-left: 5px solid #ffc107;
+      background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+      padding: 20px 25px;
+      margin: 25px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    a { color: #e91e63; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .meta {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 30px;
+      padding: 15px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+    ul, ol { padding-left: 25px; }
+    li { margin: 8px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>OpenClaw 飞书官方插件新功能分析报告</h1>
+<blockquote>
+<p>分析文档：<a href="https://bytedance.larkoffice.com/docx/MFK7dDFLFoVlOGxWCv5cTXKmnMh">OpenClaw飞书官方插件使用指南（公开版）</a><br>版本：2026.3.12 | 最新更新：2026年3月13日</p>
+</blockquote>
+<hr>
+<h2>📋 支持的飞书能力一览</h2>
+<table>
+<thead>
+<tr>
+<th>业务类别</th>
+<th>支持的能力</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>💬 消息</td>
+<td>消息读取（群聊/单聊历史、话题回复）、消息发送（含发卡片）、消息回复、消息搜索、图片/文件下载</td>
+</tr>
+<tr>
+<td>📄 文档</td>
+<td>创建云文档、更新云文档、读取云文档内容</td>
+</tr>
+<tr>
+<td>📊 多维表格</td>
+<td>创建/管理多维表格、数据表、字段、记录（增删改查、批量操作、高级筛选）、视图</td>
+</tr>
+<tr>
+<td>📊 电子表格</td>
+<td>创建、编辑、查看电子表格</td>
+</tr>
+<tr>
+<td>📅 日历日程</td>
+<td>日历管理、日程管理（创建/查询/修改/删除/搜索）、参会人管理、忙闲查询</td>
+</tr>
+<tr>
+<td>✅ 任务</td>
+<td>任务管理（创建/查询/更新/完成）、清单管理、子任务、评论</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>🆕 2026.3.12 版本新功能</h2>
+<h3>主要更新</h3>
+<ol>
+<li><p><strong>修复插件升级后 warning 提示 &quot;plugin id mismatch&quot; 错误</strong></p>
+<ul>
+<li>提供快速升级指令</li>
+</ul>
+</li>
+<li><p><strong>安装流程简化</strong> (2026.3.10)</p>
+<ul>
+<li>只需执行一行命令，3分钟内即可完成安装飞书插件及飞书机器人的配置</li>
+</ul>
+</li>
+<li><p><strong>支持多账号能力</strong> (2026.3.10)</p>
+<ul>
+<li>在飞书中为多个 Agent 配置独立的飞书应用机器人</li>
+</ul>
+</li>
+<li><p><strong>飞书插件已正式开源</strong></p>
+<ul>
+<li>Github: <a href="https://github.com/larksuite/openclaw-lark">https://github.com/larksuite/openclaw-lark</a></li>
+</ul>
+</li>
+<li><p><strong>电子表格读写支持</strong> (2026.3.8)</p>
+<ul>
+<li>小龙虾现在可以看表格数据、追加内容</li>
+</ul>
+</li>
+<li><p><strong>云文档文件/图片插入</strong> (2026.3.8)</p>
+<ul>
+<li>写文档时可以插入图片、文件附件</li>
+</ul>
+</li>
+<li><p><strong>AI 可感知表情反馈</strong> (2026.3.8)</p>
+<ul>
+<li>收到 👍、❤️ 等表情后，可以调整回复逻辑</li>
+</ul>
+</li>
+<li><p><strong>话题群独立上下文</strong> (2026.3.6)</p>
+<ul>
+<li>每个独立话题拥有独立上下文和并行执行任务</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>⌨️ 高级配置指令汇总</h2>
+<h3>1. 版本检查与升级</h3>
+<pre><code class="language-bash"># 查看 OpenClaw 版本
+openclaw -v
+
+# 升级 OpenClaw（需满足版本要求）
+npm install -g openclaw
+
+# 升级飞书官方插件到最新版本
+npx -y @larksuite/openclaw-lark-tools update
+</code></pre>
+<blockquote>
+<p>⚠️ OpenClaw 版本要求：Linux/MacOS ≥ 2026.2.26，Windows ≥ 2026.3.2</p>
+</blockquote>
+<hr>
+<h3>2. 流式输出配置</h3>
+<pre><code class="language-bash"># 开启流式输出
+openclaw config set channels.feishu.streaming true
+
+# 关闭流式输出
+openclaw config set channels.feishu.streaming false
+
+# 开启耗时展示
+openclaw config set channels.feishu.footer.elapsed true
+
+# 开启状态展示
+openclaw config set channels.feishu.footer.status true
+</code></pre>
+<hr>
+<h3>3. 多任务并行及独立上下文</h3>
+<pre><code class="language-bash"># 开启话题群/消息群话题模式中的独立上下文和多任务并行
+# （详细命令需参考官方文档）
+</code></pre>
+<hr>
+<h3>4. 修改群内回复方式</h3>
+<pre><code class="language-bash"># 修改飞书机器人在群内的回复方式
+# （详细命令需参考官方文档）
+</code></pre>
+<hr>
+<h3>5. 多机器人配置</h3>
+<pre><code class="language-bash"># 配置多个飞书机器人对应不同 Agent
+# （详细命令需参考官方文档）
+</code></pre>
+<hr>
+<h3>6. 诊断命令</h3>
+<pre><code class="language-bash"># 常用诊断命令
+/feishu_doctor   # 飞书插件健康检查
+</code></pre>
+<hr>
+<h2>🔧 快速安装命令</h2>
+<pre><code class="language-bash"># 一键安装飞书官方插件
+npx -y @larksuite/openclaw-lark-tools install
+
+# 如遇权限问题，加 sudo
+sudo npx -y @larksuite/openclaw-lark-tools install
+</code></pre>
+<hr>
+<h2>⚠️ 安全注意事项</h2>
+<ol>
+<li><strong>核心风险</strong>：AI 能读取飞书数据，理论上存在泄露可能</li>
+<li><strong>强烈建议</strong>：个人账号先行试用，等安全隔离能力成熟后再用于工作环境</li>
+<li><strong>操作风险</strong>：AI 代发的飞书消息以用户名义发出，发出即成事实</li>
+<li><strong>最佳实践</strong>：重要操作&quot;先预览，再确认&quot;，避免&quot;全自动驾驶&quot;</li>
+</ol>
+<hr>
+<h2>📊 与社区版插件对比</h2>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>飞书官方插件</th>
+<th>社区原有插件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>身份模式</td>
+<td>以用户身份读写</td>
+<td>机器人身份</td>
+</tr>
+<tr>
+<td>体验</td>
+<td>更丝滑</td>
+<td>传统方式</td>
+</tr>
+<tr>
+<td>功能完整性</td>
+<td>完整支持飞书生态</td>
+<td>部分功能受限</td>
+</tr>
+</tbody></table>
+<hr>
+<p><em>报告生成时间：2026年3月14日</em></p>
+
+  </div>
+</body>
+</html>
