@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw Control UI 使用指南 - Command Palette</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .hero h1 {
+            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        .hero .kbd {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+        }
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h2 .icon {
+            font-size: 1.5rem;
+        }
+        h3 {
+            font-size: 1.1rem;
+            margin: 20px 0 12px;
+            color: var(--text);
+        }
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .kbd {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.9em;
+            color: #dc2626;
+        }
+        .kbd-group {
+            display: inline-flex;
+            gap: 4px;
+        }
+        .kbd-group .kbd {
+            border-radius: 0;
+        }
+        .kbd-group .kbd:first-child {
+            border-radius: 6px 0 0 6px;
+        }
+        .kbd-group .kbd:last-child {
+            border-radius: 0 6px 6px 0;
+        }
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+        }
+        .step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .step-number {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .step-content {
+            flex: 1;
+        }
+        .step-content h4 {
+            margin: 0 0 8px 0;
+            font-size: 1rem;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        .feature-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .feature-item .icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+        .feature-item h4 {
+            margin: 0 0 4px 0;
+            font-size: 0.95rem;
+        }
+        .feature-item p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .command-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .command-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .command-item .cmd {
+            font-family: monospace;
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .command-item .desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .screenshot-placeholder {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            border-radius: 12px;
+            padding: 60px;
+            text-align: center;
+            color: var(--text-muted);
+            margin: 20px 0;
+        }
+        .screenshot-placeholder .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        .badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .warning-box {
+            background: #fffbeb;
+            border-left: 4px solid var(--warning);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+        }
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>🦞 OpenClaw Control UI</h1>
+            <p class="subtitle">Command Palette 使用指南</p>
+            <p>按 <span class="kbd">⌘</span> + <span class="kbd">K</span> 打开命令面板</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🎯</span> 什么是 Command Palette？</h2>
+            <p>Command Palette（命令面板）是 OpenClaw Control UI v2026.3.12 新增的快捷操作入口。它整合了所有常用命令和导航功能，让你无需切换到终端就能完成各种操作。</p>
+            
+            <div class="screenshot-placeholder">
+                <div class="icon">🔍</div>
+                <p>Command Palette 示意图<br><small>按 ⌘K 打开搜索面板</small></p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🚀</span> 快速开始</h2>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>打开 Control UI</h4>
+                    <p>在浏览器中访问 <code>http://127.0.0.1:18789/</code> 或使用 <code>openclaw dashboard</code> 命令自动打开。</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>激活 Command Palette</h4>
+                    <p>按下 <span class="kbd-group"><span class="kbd">⌘</span><span class="kbd">K</span></span> (Mac) 或 <span class="kbd-group"><span class="kbd">Ctrl</span><span class="kbd">K</span></span> (Windows/Linux)，或者点击顶部的"搜索"按钮。</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>输入命令或搜索</h4>
+                    <p>直接输入命令（如 <code>/new</code>、<code>/model</code>）或搜索功能名称，然后按 <span class="kbd">Enter</span> 执行。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📋</span> 可用命令列表</h2>
+            
+            <h3>💬 会话控制</h3>
+            <div class="command-list">
+                <div class="command-item">
+                    <span class="cmd">/new</span>
+                    <span class="desc">开始新会话</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">/reset</span>
+                    <span class="desc">重置当前会话</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">/compact</span>
+                    <span class="desc">压缩会话上下文</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">/stop</span>
+                    <span class="desc">停止当前运行</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">/clear</span>
+                    <span class="desc">清空聊天记录</span>
+                </div>
+            </div>
+            
+            <h3>⚡ 模式切换</h3>
+            <div class="command-list">
+                <div class="command-item">
+                    <span class="cmd">/focus</span>
+                    <span class="desc">切换专注模式</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">/think</span>
+                    <span class="desc">设置思考级别</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">/verbose</span>
+                    <span class="desc">切换详细输出</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">/fast</span>
+                    <span class="desc">切换快速模式</span>
+                </div>
+            </div>
+            
+            <h3>ℹ️ 信息查看</h3>
+            <div class="command-list">
+                <div class="command-item">
+                    <span class="cmd">/model</span>
+                    <span class="desc">查看或设置模型</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">/status</span>
+                    <span class="desc">查看会话状态</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">/usage</span>
+                    <span class="desc">查看 Token 用量</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">/export</span>
+                    <span class="desc">导出会话为 Markdown</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">/help</span>
+                    <span class="desc">显示可用命令</span>
+                </div>
+            </div>
+            
+            <h3>🤖 代理管理</h3>
+            <div class="command-list">
+                <div class="command-item">
+                    <span class="cmd">/agents</span>
+                    <span class="desc">列出可用代理</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">/kill</span>
+                    <span class="desc">终止子代理</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">/skill</span>
+                    <span class="desc">运行技能</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">/steer</span>
+                    <span class="desc">引导子代理</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🧭</span> 导航功能</h2>
+            <p>除了命令，Command Palette 还提供快速导航：</p>
+            
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="icon">📊</div>
+                    <h4>Overview</h4>
+                    <p>系统概览</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">💬</div>
+                    <h4>Sessions</h4>
+                    <p>会话管理</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">⏰</div>
+                    <h4>Scheduled</h4>
+                    <p>定时任务</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">🛠️</div>
+                    <h4>Skills</h4>
+                    <p>技能管理</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">⚙️</div>
+                    <h4>Settings</h4>
+                    <p>系统设置</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">🤖</div>
+                    <h4>Agents</h4>
+                    <p>代理配置</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🔧</span> 工具快捷方式</h2>
+            <p>快速调用常用工具：</p>
+            
+            <div class="command-list">
+                <div class="command-item">
+                    <span class="cmd">Shell Command</span>
+                    <span class="desc">运行 Shell 命令</span>
+                </div>
+                <div class="command-item">
+                    <span class="cmd">Debug Mode</span>
+                    <span class="desc">切换调试模式</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">⌨️</span> 键盘快捷键</h2>
+            
+            <table style="width:100%; border-collapse: collapse; margin: 16px 0;">
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 12px;"><span class="kbd">⌘</span> + <span class="kbd">K</span></td>
+                    <td style="padding: 12px;">打开 Command Palette</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 12px;"><span class="kbd">↑</span> <span class="kbd">↓</span></td>
+                    <td style="padding: 12px;">导航选项</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 12px;"><span class="kbd">Enter</span></td>
+                    <td style="padding: 12px;">执行选中命令</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 12px;"><span class="kbd">Esc</span></td>
+                    <td style="padding: 12px;">关闭面板</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="warning-box">
+            <strong>💡 小技巧：</strong> 你可以输入中文或英文来搜索命令，例如输入"新建"、"重置"、"模型"等关键词快速找到对应命令。
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">ℹ️</span> 版本信息</h2>
+            <p>Command Palette 功能于 <strong>OpenClaw v2026.3.12</strong> 版本引入。这是一个全新的快捷操作入口，方便用户在 Control UI 中直接执行各种命令而无需切换到终端。</p>
+            <p>当前版本：<span class="badge">v2026.3.12</span></p>
+        </div>
+
+        <footer>
+            <p>📄 OpenClaw Control UI 使用指南 | 由 AI 助手生成</p>
+            <p>🔗 <a href="https://docs.openclaw.ai">官方文档</a> | <a href="https://github.com/openclaw/openclaw">GitHub</a></p>
+        </footer>
+    </div>
+</body>
+</html>
