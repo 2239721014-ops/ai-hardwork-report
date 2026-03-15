@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>oMLX 模型管理使用指南</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4A90D9;
+            --secondary-color: #2C3E50;
+            --accent-color: #27AE60;
+            --bg-light: #F8F9FA;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.7;
+            color: #333;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+        .feature-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 20px;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+        }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .code-block {
+            background: #1E1E1E;
+            color: #D4D4D4;
+            border-radius: 8px;
+            padding: 15px 20px;
+            font-family: "Fira Code", "Consolas", monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .code-block .comment {
+            color: #6A9955;
+        }
+        .code-block .keyword {
+            color: #569CD6;
+        }
+        .code-block .string {
+            color: #CE9178;
+        }
+        .badge-feature {
+            background: var(--accent-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .screenshot-placeholder {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            border-radius: 8px;
+            padding: 60px;
+            text-align: center;
+            color: #6c757d;
+            border: 2px dashed #adb5bd;
+        }
+        .nav-pills .nav-link {
+            color: var(--secondary-color);
+            border-radius: 8px;
+        }
+        .nav-pills .nav-link.active {
+            background: var(--primary-color);
+        }
+        footer {
+            background: var(--secondary-color);
+            color: white;
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-3">
+                        <i class="bi bi-cpu me-3"></i>oMLX 模型管理
+                    </h1>
+                    <p class="lead mb-0">Apple Silicon 本地 LLM 推理服务器 - 模型管理功能详解</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <span class="badge bg-light text-dark fs-6 me-2">M1/M2/M3/M4</span>
+                    <span class="badge bg-success fs-6">免费开源</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 目录导航 -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <nav class="navbar navbar-light bg-light rounded p-3">
+                    <span class="navbar-brand mb-0 h5">
+                        <i class="bi bi-list-ul me-2"></i>目录
+                    </span>
+                    <ul class="nav nav-pills justify-content-center">
+                        <li class="nav-item"><a class="nav-link" href="#intro">简介</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#features">核心功能</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#operations">操作指南</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#config">配置</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#faq">常见问题</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- 简介 -->
+        <section id="intro" class="mb-5">
+            <h2 class="mb-4">
+                <span class="text-primary me-2">01</span>什么是 oMLX 模型管理？
+            </h2>
+            <div class="row">
+                <div class="col-lg-8">
+                    <p class="lead">oMLX 是一个专为 Apple Silicon Mac 优化的本地 LLM 推理服务器，其模型管理功能让你可以轻松管理多个 LLM、VLM、Embedding 和 Reranker 模型。</p>
+                    <p>通过内置的 Web 管理面板，你可以：</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>一键下载 HuggingFace 模型</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>实时监控模型运行状态</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>手动加载/卸载模型</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>设置模型固定和 TTL</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>配置采样参数和聊天模板</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <div class="screenshot-placeholder">
+                        <i class="bi bi-gpu fs-1 d-block mb-3"></i>
+                        <span>管理面板截图</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 核心功能 -->
+        <section id="features" class="mb-5">
+            <h2 class="mb-4">
+                <span class="text-primary me-2">02</span>核心功能
+            </h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="feature-card card h-100 p-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="feature-icon me-3">
+                                <i class="bi bi-download"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">模型下载器</h5>
+                                <span class="badge-feature">内置</span>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-0">直接从 HuggingFace 下载 MLX 格式模型，支持搜索、预览文件大小、一键下载。</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-card card h-100 p-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="feature-icon me-3">
+                                <i class="bi bi-memory"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">分层 KV 缓存</h5>
+                                <span class="badge-feature">热缓存</span>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-0">热缓存(RAM) + 冷缓存(SSD) 自动管理，模型上下文持久化，重启不丢失。</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-card card h-100 p-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="feature-icon me-3">
+                                <i class="bi bi-layers"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">多模型服务</h5>
+                                <span class="badge-feature">LRU</span>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-0">同时运行多个模型，LRU 自动驱逐，内存不足时自动卸载最久未使用的模型。</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-card card h-100 p-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="feature-icon me-3">
+                                <i class="bi bi-pin-angle"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">模型固定</h5>
+                                <span class="badge-feature">VIP</span>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-0">常用模型可设置为"固定"，始终保持在内存中，不会被 LRU 驱逐。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 操作指南 -->
+        <section id="operations" class="mb-5">
+            <h2 class="mb-4">
+                <span class="text-primary me-2">03</span>操作指南
+            </h2>
+            
+            <!-- 步骤 1 -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex mb-3">
+                        <span class="step-number me-3">1</span>
+                        <div>
+                            <h5 class="mb-1">打开管理面板</h5>
+                            <p class="text-muted mb-0">启动 oMLX 服务后，在浏览器访问 <code>http://localhost:8000/admin</code></p>
+                        </div>
+                    </div>
+                    <div class="screenshot-placeholder ms-5">
+                        <i class="bi bi-browser-chrome fs-1 d-block mb-3"></i>
+                        <span>管理面板界面</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤 2 -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex mb-3">
+                        <span class="step-number me-3">2</span>
+                        <div>
+                            <h5 class="mb-1">进入模型管理页面</h5>
+                            <p class="text-muted mb-0">点击左侧导航栏的「Models」或「模型」选项</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤 3 -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex mb-3">
+                        <span class="step-number me-3">3</span>
+                        <div>
+                            <h5 class="mb-1">查看已加载模型</h5>
+                            <p class="text-muted mb-0">页面显示所有已加载的模型，包括：</p>
+                            <ul class="mt-2">
+                                <li>模型名称和类型 (LLM/VLM/Embedding)</li>
+                                <li>当前内存占用</li>
+                                <li>运行状态 (已加载/已卸载)</li>
+                                <li>KV 缓存命中率</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤 4 -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex mb-3">
+                        <span class="step-number me-3">4</span>
+                        <div>
+                            <h5 class="mb-1">加载/卸载模型</h5>
+                            <p class="text-muted mb-0">点击模型卡片上的按钮进行操作：</p>
+                            <ul class="mt-2">
+                                <li><strong>加载</strong>：点击加载按钮将模型加载到内存</li>
+                                <li><strong>卸载</strong>：点击卸载按钮释放模型内存</li>
+                                <li><strong>固定</strong>：点击图钉图标保持模型常驻内存</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤 5 -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex mb-3">
+                        <span class="step-number me-3">5</span>
+                        <div>
+                            <h5 class="mb-1">下载新模型</h5>
+                            <p class="text-muted mb-0">点击「Download Model」或「下载模型」按钮：</p>
+                            <ol class="mt-2">
+                                <li>在搜索框输入模型名称 (如 Qwen3, Llama)</li>
+                                <li>浏览搜索结果，查看模型大小</li>
+                                <li>点击下载按钮等待完成</li>
+                                <li>下载完成后自动出现在模型列表</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 配置 -->
+        <section id="config" class="mb-5">
+            <h2 class="mb-4">
+                <span class="text-primary me-2">04</span>配置选项
+            </h2>
+            <div class="row">
+                <div class="col-lg-6">
+                    <h5 class="mb-3">常用 CLI 参数</h5>
+                    <div class="code-block mb-3">
+<pre><span class="comment"># 模型目录</span>
+omlx serve --model-dir ~/models
+
+<span class="comment"># 内存限制</span>
+omlx serve --max-model-memory 32GB
+
+<span class="comment"># 启用 SSD 缓存</span>
+omlx serve --paged-ssd-cache-dir ~/.omlx/cache
+
+<span class="comment"># 批处理大小</span>
+omlx serve --prefill-batch-size 8 --completion-batch-size 32
+
+<span class="comment"># API 密钥</span>
+omlx serve --api-key your-secret-key</pre>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h5 class="mb-3">Per-Model 设置</h5>
+                    <p class="text-muted">在管理面板中，点击模型卡片可设置：</p>
+                    <ul class="list-group">
+                        <li class="list-group-item"><i class="bi bi-chat-dots me-2"></i>采样参数 (Temperature, Top-P)</li>
+                        <li class="list-group-item"><i class="bi bi-chat-square-text me-2"></i>聊天模板参数</li>
+                        <li class="list-group-item"><i class="bi bi-clock me-2"></i>TTL 空闲超时</li>
+                        <li class="list-group-item"><i class="bi bi-pencil me-2"></i>模型别名</li>
+                        <li class="list-group-item"><i class="bi bi-tag me-2"></i>模型类型覆盖</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 集成 OpenClaw -->
+        <section class="mb-5">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body p-4 text-white">
+                    <h3 class="mb-3"><i class="bi bi-plug me-2"></i>集成 OpenClaw</h3>
+                    <p class="mb-3">在管理面板 → Integrations 一键配置 OpenClaw 连接：</p>
+                    <div class="code-block" style="background: rgba(0,0,0,0.3);">
+<pre><span class="keyword">API 地址</span>: <span class="string">http://localhost:8000/v1</span>
+<span class="keyword">模型名称</span>: <span class="string">你加载的模型名</span></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 常见问题 -->
+        <section id="faq" class="mb-5">
+            <h2 class="mb-4">
+                <span class="text-primary me-2">05</span>常见问题
+            </h2>
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item border-0 shadow-sm mb-3">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            <i class="bi bi-question-circle me-2"></i>模型加载失败怎么办？
+                        </button>
+                    </h3>
+                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            检查模型格式是否正确（必须是 MLX 格式）。确保 macOS 内存充足，可尝试减少 <code>--max-process-memory</code> 值。
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item border-0 shadow-sm mb-3">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            <i class="bi bi-question-circle me-2"></i>如何查看模型内存占用？
+                        </button>
+                    </h3>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            在管理面板的模型卡片上显示当前内存占用。也可使用菜单栏应用查看实时内存使用情况。
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item border-0 shadow-sm mb-3">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            <i class="bi bi-question-circle me-2"></i>SSD 缓存有什么作用？
+                        </button>
+                    </h3>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            SSD 缓存作为冷存储，当 RAM 缓存满时自动将 KV 块保存到 SSD。下次请求时从磁盘恢复，无需重新计算上下文。
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item border-0 shadow-sm mb-3">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                            <i class="bi bi-question-circle me-2"></i>支持哪些模型类型？
+                        </button>
+                    </h3>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            <ul class="mb-0">
+                                <li><strong>LLM</strong>: mlx-lm 支持的所有模型</li>
+                                <li><strong>VLM</strong>: Qwen3.5, GLM-4V, Pixtral 等</li>
+                                <li><strong>OCR</strong>: DeepSeek-OCR, DOTS-OCR</li>
+                                <li><strong>Embedding</strong>: BGE-M3, ModernBERT</li>
+                                <li><strong>Reranker</strong>: ModernBERT, XLM-RoBERTa</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 相关链接 -->
+        <section class="mb-5">
+            <div class="card border-0 bg-light">
+                <div class="card-body p-4 text-center">
+                    <h5 class="mb-3">了解更多</h5>
+                    <p class="text-muted mb-3">访问 oMLX 官方网站和 GitHub 获取更多资料</p>
+                    <a href="https://omlx.ai" class="btn btn-primary me-2" target="_blank">
+                        <i class="bi bi-globe me-1"></i>官网
+                    </a>
+                    <a href="https://github.com/jundot/omlx" class="btn btn-dark me-2" target="_blank">
+                        <i class="bi bi-github me-1"></i>GitHub
+                    </a>
+                    <a href="https://omlx.ai/benchmarks" class="btn btn-outline-secondary" target="_blank">
+                        <i class="bi bi-speedometer2 me-1"></i>性能测试
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p class="mb-1">oMLX 模型管理使用指南</p>
+            <p class="mb-0 small text-muted">Powered by oMLX | Created with OpenClaw</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
